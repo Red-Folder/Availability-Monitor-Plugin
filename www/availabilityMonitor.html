@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Availability Monitor</title>
+    </head>
+    <body>
+		<table>
+			<tr>
+				<th>Monitor Service</th>
+				<td><div id="serviceStatus"></div></td>
+				<td><input disabled id="toggleService" type="button" value="toggle"/></td>
+			</tr>
+				
+			<tr>
+				<th colspan=3 align="center">Monitor</th>
+			</tr>
+			<tr>
+				<th align="left">Id</th>
+				<td colspan=2 align="center"><div id="idDiv"/></td>
+			</tr>
+			<tr>
+				<th align="left">Name</th>
+				<td colspan=2 align="center"><input id="nameTxt" type="Text"/></td>
+			</tr>
+			<tr>
+				<th align="left">Frequency</th>
+				<td colspan=2 align="center"><input id="frequencyTxt" type="Text"/></td>
+			</tr>
+			<tr>
+				<th align="left">Type</th>
+				<td colspan=2 align="center">
+					<select id="typeDropdown">
+						<option value="HTTP">HTTP</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th align="left">Notify when down</th>
+				<td colspan=2 align="center"><input id="notifyWhenDownChkbox" type="checkbox"/></td>
+			</tr>
+			<tr>
+				<th align="left">Notify when up</th>
+				<td colspan=2 align="center"><input id="notifyWhenUpChkbox" type="checkbox"/></td>
+			</tr>
+			<tr>
+				<th align="left">Unavailable Threshold</th>
+				<td colspan=2 align="center"><input id="unavailableThresholdTxt" type="Text"/></td>
+			</tr>
+			<tr>
+				<th align="left">URL</th>
+				<td colspan=2 align="center"><input id="urlTxt" type="Text"/></td>
+			</tr>
+			
+			<tr>
+				<td colspan=3 align="center"><input disabled id="updateBtn" type="button" value="Update"/></td>
+			</tr>
+
+		</table>
+        
+        <script type="text/javascript" src="cordova.js"></script>
+        
+        <script type="text/javascript" src="js/availabilityMonitor.js"></script>
+        
+        <script type="text/javascript">
+   			var availabilityMonitor;
+
+   			document.addEventListener('deviceready', function() {
+   				
+				availabilityMonitor = cordova.require('com.red_folder.phonegap.plugin.availabilitymonitor.service.MonitorService');
+
+      			availabilityMonitor.init(	function(data) { updateView(data) },
+      										function(data) { displayError(data) });
+      										
+      			//x();
+   			}, true);
+   			  
+   			/*
+   			function x() {
+   				alert("Before");
+   				availabilityMonitor.getMonitorsFromDB(	function(data) { displayResult(data) }, 
+   													function(data) { displayError(data) });
+   				alert("After");
+   			}
+   			*/
+   			      
+   			function start() {
+   				availabilityMonitor.start(	function(data) { updateView(data) }, 
+   											function(data) { displayError(data) });
+   			}
+   			
+   			function stop() {
+   				availabilityMonitor.stop(	function(data) { updateView(data) }, 
+   											function(data) { displayError(data) });
+   			}
+   			
+   			function update() {
+				var monitorId = document.getElementById("idDiv");
+				var monitorName = document.getElementById("nameTxt");
+				var monitorFrequency = document.getElementById("frequencyTxt");
+				var monitorType = document.getElementById("typeDropdown");
+				var monitorNotifyWhenDown = document.getElementById("notifyWhenDownChkbox");
+				var monitorNotifyWhenUp = document.getElementById("notifyWhenUpChkbox");
+				var monitorUnavailableThreshold = document.getElementById("unavailableThresholdTxt");
+				var monitorURL = document.getElementById("urlTxt");
+				
+				var monitor = {
+					"Id": monitorId.innerHTML,
+					"Name": monitorName.value,
+					"Frequency": monitorFrequency.value,
+					"Type": monitorType.value,
+					"NotifyWhenDown": monitorNotifyWhenDown.checked,
+					"NotifyWhenUp": monitorNotifyWhenUp.checked,
+					"UnavailableThreshold": monitorUnavailableThreshold.value,
+					"URL": monitorURL.value
+				};
+				
+   				availabilityMonitor.saveMonitor(	monitor,
+   													function(data) { updateView(data) }, 
+   													function(data) { displayError(data) });
+				
+   			}
+   			
+   			function displayResult(data) {
+      			alert("Working: " + JSON.stringify(data));
+   			}
+
+   			function displayError(data) {
+      			alert(data.ErrorMessage);
+   			}
+   			
+   			/*
+			 * View logic
+			 */
+ 			function updateView(data) {
+				var serviceBtn = document.getElementById("toggleService");
+				var updateBtn = document.getElementById("updateBtn");
+
+				var serviceStatus = document.getElementById("serviceStatus");
+
+				var monitorId = document.getElementById("idDiv");
+				var monitorName = document.getElementById("nameTxt");
+				var monitorFrequency = document.getElementById("frequencyTxt");
+				var monitorType = document.getElementById("typeDropdown");
+				var monitorNotifyWhenDown = document.getElementById("notifyWhenDownChkbox");
+				var monitorNotifyWhenUp = document.getElementById("notifyWhenUpChkbox");
+				var monitorUnavailableThreshold = document.getElementById("unavailableThresholdTxt");
+				var monitorURL = document.getElementById("urlTxt");
+				
+				serviceBtn.disabled = false;
+				if (availabilityMonitor.getServiceRunning()) {
+					serviceStatus.innerHTML = "Running";
+					serviceBtn.onclick = stop;
+   				} else { 
+					serviceStatus.innerHTML = "Not running";
+					serviceBtn.onclick = start;
+				} 
+				
+				updateBtn.onclick = update;
+				updateBtn.disabled = false;
+				if (availabilityMonitor.hasMonitors()) {
+					var tmpMonitors = availabilityMonitor.getMonitors();
+					var tmpMonitor = tmpMonitors[0];
+					
+					monitorId.innerHTML = tmpMonitor.Id;
+					monitorName.value = tmpMonitor.Name;
+					monitorFrequency.value = tmpMonitor.Frequency;
+					monitorType.value = tmpMonitor.Type;
+					monitorNotifyWhenDown.checked = tmpMonitor.NotifyWhenDown;
+					monitorNotifyWhenUp.checked = tmpMonitor.NotifyWhenDown;
+					monitorUnavailableThreshold.value = tmpMonitor.UnavailableThreshold;
+					monitorURL.value = tmpMonitor.URL;
+				} else {
+					monitorId.value = "";
+					monitorName.value = "";
+					monitorFrequency.value = "1";
+					monitorType.value = "HTTP";
+					monitorNotifyWhenDown.checked = false;
+					monitorNotifyWhenUp.checked = false;
+					monitorUnavailableThreshold.value = 5;
+					monitorURL.value = "";
+				}
+   			}
+   			
+   		</script>
+    </body>
+</html>
