@@ -22,11 +22,11 @@
     <!-- android -->
     <platform name="android">
 
-		<asset src="www/availabilityMonitor.html" target="availabilityMonitor.html" />
+	<asset src="www/availabilityMonitor.html" target="availabilityMonitor.html" />
 
-		<js-module src="www/availabilityMonitor.js" name="availabilityMonitor">
-			<clobbers target="cordova.plugins.availabilityMonitor" />
-		</js-module>
+	<js-module src="www/availabilityMonitor.js" name="availabilityMonitor">
+		<clobbers target="cordova.plugins.availabilityMonitor" />
+	</js-module>
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
   
@@ -36,6 +36,13 @@
 				</intent-filter>
 			</service>
             
+        </config-file>
+        
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="AvailabilityMonitorPlugin">
+                <param name="android-package" value="com.red_folder.phonegap.plugin.availabilitymonitor.AvailabilityMonitorPlugin"/>
+            </feature>
+    
         </config-file>
         
         <source-file src="src/android/com/red_folder/phonegap/plugin/availabilitymonitor" target-dir="src/com/red_folder/phonegap/plugin" />
