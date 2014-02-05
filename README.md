@@ -15,16 +15,18 @@ The plugin can be installed using the following commands (this assumes you are f
 
 You should be able to run this example.  To use the example:
 
-* Create the monitor, for example:
-** Name: "Test"
-** Frequency: 1 (this is in minutes)
-** Type: HTTP
-** Notify When Down: Unchecked
-** Notify When Up: Unchecked
-** Unavailable Threshold: 10
-** URL: "http://www.google.com"
-** Click Update
-* Start the Monitor Service by clicking on the Toggle
+Create the monitor, for example:
+
+* Name: "Test"
+* Frequency: 1 (this is in minutes)
+* Type: HTTP
+* Notify When Down: Unchecked
+* Notify When Up: Unchecked
+* Unavailable Threshold: 10
+* URL: "http://www.google.com"
+* Click Update
+
+Start the Monitor Service by clicking on the Toggle
 
 The background service will start monitoring the availability of www.google.com.  This data will be saved into a database, with the results available for later use.
 
