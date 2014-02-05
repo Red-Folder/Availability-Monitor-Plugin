@@ -38,7 +38,7 @@
             
         </config-file>
         
-        <source-file src="src/android/com/red-folder/phonegap/plugin/availabilitymonitor" target-dir="src/com/red-folder/phonegap/plugin" />
+        <source-file src="src/android/com/red_folder/phonegap/plugin/availabilitymonitor" target-dir="src/com/red_folder/phonegap/plugin" />
     </platform>
 	
 </plugin>
