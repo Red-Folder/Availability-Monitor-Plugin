@@ -38,7 +38,7 @@
             
         </config-file>
         
-        <source-file src="src/android/" target-dir="src/" />
+        <source-file src="src/android/com/" target-dir="src/" />
     </platform>
 	
 </plugin>
